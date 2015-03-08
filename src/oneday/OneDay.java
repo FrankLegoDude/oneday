@@ -18,7 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -31,28 +30,29 @@ import javafx.stage.Stage;
 public class OneDay extends Application {
     
         
-    private final static String PATH_TO_SPLASH_SCREEN="file:///C:\\Users\\tim\\Desktop\\images\\header.jpg";
-    private final static String PATH_TO_SOUND="file:///C:\\Users\\tim\\Desktop\\images\\Pigs.mp3";
+    //private final static String PATH_TO_SPLASH_SCREEN="file:///C:\\Users\\tim\\Desktop\\images\\header.jpg";
+    private final static String PATH_TO_SPLASH_SCREEN="/images/Title.jpg";
+    private final static String PATH_TO_SOUND="/sound/sound1.mp3";
+    private final static String DEFAULT_TITLE="WELCOME";
     private final static int HSIZE = 500;
     private final static int VSIZE = 400;
     
     private SoundManager soundManager;
     
+    private final BorderPane root = new BorderPane();
+    
     @Override
     public void start(Stage primaryStage) {
           this.soundManager = new SoundManager();
         
-        try {
-            soundManager.loadSound(new URL(PATH_TO_SOUND));
-        } catch (MalformedURLException ex) {
-            System.out.println("Unknown URL for sound "+ex.getMessage());
-        }
+
+        URL res = this.getClass().getResource(PATH_TO_SOUND);
+        soundManager.loadSound(res);
+
         
         this.soundManager.playSound();
         
-        BorderPane root = new BorderPane();
-        HBox hbox = createTitleBox();
-        root.setTop(hbox);
+        createTitleBox();
         root.setBottom(createButtonBar());
         root.setCenter(createSplashScreenImage());
 
@@ -64,7 +64,7 @@ public class OneDay extends Application {
         primaryStage.show();
     }
      private ImageView createSplashScreenImage() {
-        Image image = new Image(PATH_TO_SPLASH_SCREEN);
+        Image image = new Image(this.getClass().getResourceAsStream(PATH_TO_SPLASH_SCREEN));
         ImageView iv = new ImageView();
         iv.setImage(image);
         
@@ -81,6 +81,13 @@ public class OneDay extends Application {
         
         Button startButton = new Button();
         startButton.setText("Start");
+        startButton.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                createTitleBox("Welcome to fnah");
+            }
+        });
         
         Button helpButton = new Button();
         helpButton.setText("Help");
@@ -105,14 +112,21 @@ public class OneDay extends Application {
     }
     
     private HBox createTitleBox() {
+        
+        return createTitleBox(DEFAULT_TITLE);
+    }
+    
+    private HBox createTitleBox(String str) {
         HBox hbox = new HBox();
         
-        Text t = new Text(10,VSIZE, "WELCOME");
+        Text t = new Text(10,VSIZE, str);
         t.setFont(new Font(20));
         t.textAlignmentProperty().set(TextAlignment.CENTER);
         hbox.setAlignment(Pos.CENTER);
         
         hbox.getChildren().add(t);
+        
+        root.setTop(hbox);
         return hbox;
 
     }
