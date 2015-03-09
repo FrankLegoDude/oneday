@@ -19,13 +19,14 @@ public class SoundManager {
     
     private AudioClip sound;
     ExecutorService soundPool = Executors.newFixedThreadPool(2);
+    private Runnable soundPlay;
     
     public void loadSound(URL url) {
         this.sound = new AudioClip(url.toExternalForm());
     }
     
     public void playSound() {
-        Runnable soundPlay = new Runnable() {
+        soundPlay = new Runnable() {
 
             @Override
             public void run() {
@@ -34,6 +35,10 @@ public class SoundManager {
             
         };
         soundPool.execute(soundPlay);
+    }
+    
+    public void stopSound() {
+        this.sound.stop();
     }
     
     public void shutdown() {

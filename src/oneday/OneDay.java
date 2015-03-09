@@ -30,9 +30,10 @@ import javafx.stage.Stage;
 public class OneDay extends Application {
     
         
-    //private final static String PATH_TO_SPLASH_SCREEN="file:///C:\\Users\\tim\\Desktop\\images\\header.jpg";
     private final static String PATH_TO_SPLASH_SCREEN="/images/Title.jpg";
+    private final static String PATH_TO_SECOND_IMAGE="/images/Second.jpg";
     private final static String PATH_TO_SOUND="/sound/sound1.mp3";
+    private final static String PATH_TO_SOUND2="/sound/unicornfeast.mp3";
     private final static String DEFAULT_TITLE="WELCOME";
     private final static int HSIZE = 500;
     private final static int VSIZE = 400;
@@ -70,6 +71,14 @@ public class OneDay extends Application {
         
         return iv;
     }
+     
+     private ImageView createScreenTwo() {
+        Image image = new Image(this.getClass().getResourceAsStream(PATH_TO_SECOND_IMAGE));
+        ImageView iv = new ImageView();
+        iv.setImage(image);
+        
+        return iv;
+     }
     
     private void shutdown() {
         
@@ -95,6 +104,22 @@ public class OneDay extends Application {
         Button exitButton = new Button();
         exitButton.setText("Exit");
         
+        Button nextButton = new Button();
+        nextButton.setText("Next");
+        
+        nextButton.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                ImageView iv = createScreenTwo();
+                root.setCenter(iv);
+                soundManager.stopSound();
+                soundManager.loadSound(this.getClass().getResource(PATH_TO_SOUND2));
+                soundManager.playSound();
+                createTitleBox("Eating Unicorns");
+            }
+        });
+        
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
@@ -106,7 +131,7 @@ public class OneDay extends Application {
         });
         
         
-        hbox.getChildren().addAll(startButton, helpButton, exitButton);
+        hbox.getChildren().addAll(startButton, helpButton, exitButton, nextButton);
         
         return hbox;
     }
